@@ -17,6 +17,10 @@ DECLARE_PER_CPU(unsigned long, cpu_dr7);
 	native_set_debugreg(register, value)
 #endif
 
+/**
+ *
+ * @param  regno 0..7
+ */
 static inline unsigned long native_get_debugreg(int regno)
 {
 	unsigned long val = 0;	/* Damn you, gcc! */
@@ -43,9 +47,15 @@ static inline unsigned long native_get_debugreg(int regno)
 	default:
 		BUG();
 	}
+
 	return val;
 }
 
+/**
+ *
+ * @param regno 0..7
+ * @param value
+ */
 static inline void native_set_debugreg(int regno, unsigned long value)
 {
 	switch (regno) {
@@ -72,6 +82,9 @@ static inline void native_set_debugreg(int regno, unsigned long value)
 	}
 }
 
+/**
+ *
+ */
 static inline void hw_breakpoint_disable(void)
 {
 	/* Zero the control register for HW Breakpoint */

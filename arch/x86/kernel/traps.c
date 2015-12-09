@@ -122,6 +122,10 @@ void ist_enter(struct pt_regs *regs)
 	RCU_LOCKDEP_WARN(!rcu_is_watching(), "ist_enter didn't work");
 }
 
+/**
+ *
+ * @param regs
+ */
 void ist_exit(struct pt_regs *regs)
 {
 	preempt_enable_no_resched();
@@ -168,6 +172,9 @@ void ist_end_non_atomic(void)
 	preempt_disable();
 }
 
+/**
+ *
+ */
 static nokprobe_inline int
 do_trap_no_signal(struct task_struct *tsk, int trapnr, char *str,
 		  struct pt_regs *regs,	long error_code)
@@ -228,6 +235,9 @@ static siginfo_t *fill_trap_info(struct pt_regs *regs, int signr, int trapnr,
 	return info;
 }
 
+/**
+ *
+ */
 static void
 do_trap(int trapnr, int signr, char *str, struct pt_regs *regs,
 	long error_code, siginfo_t *info)
@@ -526,7 +536,14 @@ do_general_protection(struct pt_regs *regs, long error_code)
 }
 NOKPROBE_SYMBOL(do_general_protection);
 
-/* May run on IST stack. */
+/**
+ * May run on IST stack.
+ *
+ * @param  regs
+ * @param  error_code
+ *
+ * FABIC
+ */
 dotraplinkage void notrace do_int3(struct pt_regs *regs, long error_code)
 {
 #ifdef CONFIG_DYNAMIC_FTRACE
@@ -575,10 +592,13 @@ exit:
 NOKPROBE_SYMBOL(do_int3);
 
 #ifdef CONFIG_X86_64
-/*
+/**
  * Help handler running on IST stack to switch off the IST stack if the
  * interrupted code was in user mode. The actual stack switch is done in
  * entry_64.S
+ *
+ * @param  eregs
+ * @return
  */
 asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs)
 {
@@ -588,11 +608,18 @@ asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs)
 }
 NOKPROBE_SYMBOL(sync_regs);
 
+/**
+ *
+ */
 struct bad_iret_stack {
 	void *error_entry_ret;
 	struct pt_regs regs;
 };
 
+/**
+ * @param s
+ * @return
+ */
 asmlinkage __visible notrace
 struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
 {
@@ -665,6 +692,8 @@ static bool is_sysenter_singlestep(struct pt_regs *regs)
  * by user code)
  *
  * May run on IST stack.
+ *
+ * FABIC
  */
 dotraplinkage void do_debug(struct pt_regs *regs, long error_code)
 {
